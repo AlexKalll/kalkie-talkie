@@ -20,8 +20,8 @@ type UITexts = {
 
 export const UI_TEXTS: UITexts = {
   [Language.ENGLISH]: {
-    header: 'Gemini Live Talk',
-    welcomeTitle: 'Talk with Gemini Live',
+  header: 'Kalkie-talkie Talk',
+  welcomeTitle: 'Talk with Kalkie-talkie',
     welcomeSubtitle: 'Your AI companion in English and Amharic. Tap the microphone to begin.',
     startListening: 'Start Listening',
     stopListening: 'Stop Listening',
@@ -35,8 +35,8 @@ export const UI_TEXTS: UITexts = {
     unmute: 'Unmute',
   },
   [Language.AMHARIC]: {
-    header: 'ከ Gemini Live ጋር ይነጋገሩ',
-    welcomeTitle: 'ከ Gemini Live ጋር ይነጋገሩ',
+  header: 'Kalkie-talkie Talk',
+  welcomeTitle: 'ከ Kalkie-talkie ጋር ይነጋገሩ',
     welcomeSubtitle: 'የእርስዎ AI ጓደኛ በእንግሊዝኛ እና በአማርኛ። ለመጀመር ማይክሮፎኑን ይንኩ።',
     startListening: 'ማዳመጥ ጀምር',
     stopListening: 'ማዳመጥ አቁም',

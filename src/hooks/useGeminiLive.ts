@@ -213,8 +213,8 @@ export const useGeminiLive = (language: Language, voice: Voice) => {
           },
           onmessage: handleMessage,
           onerror: (e) => {
-            console.error('Gemini Live API Error:', e);
-            const msg = (e && (e as any).message) ? String((e as any).message) : 'An unknown error occurred with the Gemini Live session.';
+            console.error('Kalkie-talkie API Error:', e);
+            const msg = (e && (e as any).message) ? String((e as any).message) : 'An unknown error occurred with the Kalkie-talkie session.';
             setErrorMessage(msg);
             setConnectionState('error');
             closeSession();
@@ -233,7 +233,7 @@ export const useGeminiLive = (language: Language, voice: Voice) => {
       });
 
     } catch (error) {
-      console.error('Failed to start Gemini Live session:', error);
+  console.error('Failed to start Kalkie-talkie session:', error);
       setErrorMessage((error as any)?.message ?? 'Failed to start session.');
       setConnectionState('error');
       setIsListening(false);
