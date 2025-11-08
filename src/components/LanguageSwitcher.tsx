@@ -19,20 +19,22 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({ language, setLangua
       <button
         onClick={() => switchLanguage(Language.ENGLISH)}
         disabled={disabled}
-        className={`px-3 py-1 text-sm font-semibold rounded-full transition-colors duration-300 ${
+        className={`px-4 py-1 text-sm font-semibold rounded-full transition-colors duration-300 ${
           language === Language.ENGLISH ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-700'
         }`}
+        aria-label="Switch to English"
       >
-        EN
+        English
       </button>
       <button
         onClick={() => switchLanguage(Language.AMHARIC)}
         disabled={disabled}
-        className={`px-3 py-1 text-sm font-semibold rounded-full transition-colors duration-300 ${
+        className={`px-4 py-1 text-sm font-semibold rounded-full transition-colors duration-300 ${
           language === Language.AMHARIC ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-700'
         }`}
+        aria-label="Switch to Amharic"
       >
-        አማ
+        አማርኛ
       </button>
     </div>
   );
