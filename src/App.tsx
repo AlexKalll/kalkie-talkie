@@ -78,7 +78,7 @@ const App: React.FC = () => {
           ) : (
             <div className="space-y-4">
               {messages.map((msg) => (
-                <ChatBubble key={msg.id} id={msg.id} sender={msg.sender} text={msg.text} isFinal={msg.isFinal} />
+                <ChatBubble key={msg.id} sender={msg.sender} text={msg.text} isPartial={msg.isPartial} />
               ))}
               <div ref={chatEndRef} />
             </div>

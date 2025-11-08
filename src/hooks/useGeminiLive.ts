@@ -41,6 +41,20 @@ export const useGeminiLive = (language: Language, voice: Voice) => {
     return 'You are a friendly and helpful assistant. Please respond in English.';
   }, [language]);
 
+  // Helper to add or update a live (partial) message at the end of the messages list
+  const upsertPartialMessage = useCallback((id: string, sender: 'user' | 'gemini', text: string) => {
+    setMessages(prev => {
+      // Remove any existing partial with same id
+      const filtered = prev.filter(m => m.id !== id);
+      // Push the updated partial at the end
+      return [...filtered, { id, sender, text, isPartial: true }];
+    });
+  }, []);
+
+  const removePartialMessages = useCallback(() => {
+    setMessages(prev => prev.filter(m => !(m.id === 'live-user' || m.id === 'live-gemini')));
+  }, []);
+
   const closeSession = useCallback(() => {
     if (isClosingRef.current) return; // idempotent
     isClosingRef.current = true;
@@ -112,95 +126,34 @@ export const useGeminiLive = (language: Language, voice: Voice) => {
       const ai = new GoogleGenAI({ apiKey });
 
       const handleMessage = async (message: LiveServerMessage) => {
-        // Handle streaming transcriptions: update partials live in the chat
-        if (message.serverContent?.inputTranscription) {
-          // Append partial user text and upsert a live user message
-          currentInputTranscriptionRef.current += message.serverContent.inputTranscription.text;
-          const partialUser = currentInputTranscriptionRef.current;
-          setMessages(prev => {
-            const liveId = 'user-live';
-            const idx = prev.findIndex(m => m.id === liveId);
-            if (idx !== -1) {
-              const copy = [...prev];
-              // Update in-place to avoid DOM remounts (prevents blinking)
-              copy[idx] = { ...copy[idx], text: partialUser, isFinal: false };
-              return copy;
-            }
-            return [...prev, { id: liveId, sender: 'user', text: partialUser, isFinal: false }];
-          });
-        }
-
+        // Handle incremental transcriptions (live partials)
         if (message.serverContent?.outputTranscription) {
-          // Append partial assistant text and upsert a live assistant message
           currentOutputTranscriptionRef.current += message.serverContent.outputTranscription.text;
-          const partial = currentOutputTranscriptionRef.current;
-          setMessages(prev => {
-            const liveId = 'gemini-live';
-            const idx = prev.findIndex(m => m.id === liveId);
-            if (idx !== -1) {
-              const copy = [...prev];
-              // Update in-place to avoid DOM remounts (prevents blinking)
-              copy[idx] = { ...copy[idx], text: partial, isFinal: false };
-              return copy;
-            }
-            return [...prev, { id: liveId, sender: 'gemini', text: partial, isFinal: false }];
-          });
+          // upsert live AI partial
+          upsertPartialMessage('live-gemini', 'gemini', currentOutputTranscriptionRef.current);
         }
 
+        if (message.serverContent?.inputTranscription) {
+          currentInputTranscriptionRef.current += message.serverContent.inputTranscription.text;
+          // upsert live user partial
+          upsertPartialMessage('live-user', 'user', currentInputTranscriptionRef.current);
+        }
+
+        // When a turn completes, remove partials and append finalized messages
         if (message.serverContent?.turnComplete) {
-          // Finalize: update live placeholders in-place so their DOM nodes remain mounted
           const userInput = currentInputTranscriptionRef.current.trim();
           const geminiResponse = currentOutputTranscriptionRef.current.trim();
 
+          // Remove any live partials from the list before finalizing
+          removePartialMessages();
+
           setMessages(prev => {
-            const result = [...prev];
-            const userIdx = result.findIndex(m => m.id === 'user-live');
-            const geminiIdx = result.findIndex(m => m.id === 'gemini-live');
-
-            // If user-live exists, update it in place to finalized content; otherwise append
-            if (userIdx !== -1) {
-              if (userInput) {
-                result[userIdx] = { ...result[userIdx], text: userInput, isFinal: true };
-              } else {
-                // remove empty interim
-                result.splice(userIdx, 1);
-              }
-            } else if (userInput) {
-              // Append user final message at the end for now. We'll ensure ordering below.
-              result.push({ id: `user-${Date.now()}`, sender: 'user', text: userInput, isFinal: true });
-            }
-
-            // If gemini-live exists, update it in place to finalized content; otherwise append
-            if (geminiIdx !== -1) {
-              // If user-live was before gemini-live and we removed user-live, geminiIdx may have shifted.
-              const adjustedGeminiIdx = result.findIndex(m => m.id === 'gemini-live');
-              if (adjustedGeminiIdx !== -1) {
-                if (geminiResponse) {
-                  result[adjustedGeminiIdx] = { ...result[adjustedGeminiIdx], text: geminiResponse, isFinal: true };
-                } else {
-                  result.splice(adjustedGeminiIdx, 1);
-                }
-              }
-            } else if (geminiResponse) {
-              result.push({ id: `gemini-${Date.now()}`, sender: 'gemini', text: geminiResponse, isFinal: true });
-            }
-
-            // Ensure ordering: user final message should appear before assistant final message
-            // Find final user and final gemini indices
-            const finalUserIdx = result.findIndex(m => m.sender === 'user' && m.isFinal);
-            const finalGemIdx = result.findIndex(m => m.sender === 'gemini' && m.isFinal);
-            if (finalUserIdx !== -1 && finalGemIdx !== -1 && finalUserIdx > finalGemIdx) {
-              // swap to ensure user comes first
-              const [userMsg] = result.splice(finalUserIdx, 1);
-              // after removal, insert userMsg before finalGemIdx
-              const insertAt = result.findIndex(m => m.sender === 'gemini' && m.isFinal);
-              result.splice(insertAt, 0, userMsg);
-            }
-
-            return result;
+            const newMessages: Message[] = [...prev];
+            if (userInput) newMessages.push({ id: `user-${Date.now()}`, sender: 'user', text: userInput });
+            if (geminiResponse) newMessages.push({ id: `gemini-${Date.now()}`, sender: 'gemini', text: geminiResponse });
+            return newMessages;
           });
 
-          // Clear partial buffers
           currentInputTranscriptionRef.current = '';
           currentOutputTranscriptionRef.current = '';
         }
@@ -209,8 +162,20 @@ export const useGeminiLive = (language: Language, voice: Voice) => {
   const base64Audio = Array.isArray(parts) ? parts[0]?.inlineData?.data : undefined;
         if (base64Audio && outputAudioContextRef.current) {
           const context = outputAudioContextRef.current;
+          try {
+            // Some browsers suspend AudioContext until a user gesture; ensure it's running
+            if (context.state === 'suspended') {
+              await context.resume();
+            }
+          } catch (err) {
+            console.warn('Failed to resume output audio context:', err);
+          }
+
+          // Debug: log that we received audio payload
+          console.debug('Received audio part, length:', base64Audio.length);
+
           nextStartTimeRef.current = Math.max(nextStartTimeRef.current, context.currentTime);
-          
+
           const audioBuffer = await decodeAudioData(decode(base64Audio), context, 24000, 1);
           const source = context.createBufferSource();
           source.buffer = audioBuffer;
