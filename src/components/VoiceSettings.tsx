@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { SettingsIcon } from './icons/Icons';
 
 type Voice = 'Orus' | 'Zephyr';
+const voiceMap: Record<Voice, string> = {
+  Zephyr: 'Jerry',
+  Orus: 'Tom',
+};
 
 interface VoiceSettingsProps {
   onVoiceChange: (voice: Voice) => void;
@@ -34,14 +37,14 @@ const VoiceSettings: React.FC<VoiceSettingsProps> = ({ onVoiceChange, currentVoi
       <button
         onClick={() => setIsOpen(prev => !prev)}
         disabled={disabled}
-        className="w-16 h-16 flex items-center justify-center bg-gray-700 hover:bg-gray-600 disabled:bg-gray-800 disabled:text-gray-500 rounded-full transition-colors"
+        className="px-4 py-2 text-sm font-medium bg-gray-700 hover:bg-gray-600 disabled:bg-gray-800 disabled:text-gray-500 rounded-lg transition-colors flex items-center"
         aria-label="Open voice settings"
       >
-        <SettingsIcon />
+        {voiceMap[currentVoice]}
       </button>
 
       {isOpen && (
-        <div className="absolute bottom-full mb-3 w-48 bg-gray-800 border border-white/20 rounded-lg shadow-lg p-2 z-10">
+        <div className="absolute bottom-full mb-2 w-48 bg-gray-800 border border-white/20 rounded-lg shadow-lg p-2 z-10">
           <p className="text-xs text-gray-400 px-2 pb-2">Assistant Voice</p>
           <button
             onClick={() => handleVoiceSelect('Zephyr')}
@@ -49,7 +52,7 @@ const VoiceSettings: React.FC<VoiceSettingsProps> = ({ onVoiceChange, currentVoi
               currentVoice === 'Zephyr' ? 'bg-blue-600 text-white' : 'hover:bg-gray-700'
             }`}
           >
-            Zephyr (Female)
+            Jerry (Female)
           </button>
           <button
             onClick={() => handleVoiceSelect('Orus')}
@@ -57,7 +60,7 @@ const VoiceSettings: React.FC<VoiceSettingsProps> = ({ onVoiceChange, currentVoi
               currentVoice === 'Orus' ? 'bg-blue-600 text-white' : 'hover:bg-gray-700'
             }`}
           >
-            Orus (Male)
+            Tom (Male)
           </button>
         </div>
       )}

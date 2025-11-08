@@ -86,31 +86,39 @@ const App: React.FC = () => {
         </main>
         
         <footer className="p-4 border-t border-white/10 flex-shrink-0">
-            <div className="flex items-center justify-center space-x-4">
-                <VoiceSettings 
-                  onVoiceChange={setVoice} 
-                  currentVoice={voice} 
-                  disabled={isListening} 
-                />
-                 <ControlButton
-                    onClick={handleClearClick}
-                    disabled={messages.length === 0 && !isListening}
-                    className="bg-gray-700 hover:bg-gray-600 disabled:bg-gray-800 disabled:text-gray-500"
-                    aria-label={UI_TEXTS[language].clearChat}
-                >
-                    <TrashIcon />
-                </ControlButton>
+            <div className="flex items-center justify-between w-full">
+                {/* Left side: Voice Settings */}
+                <div className="flex-1 flex justify-start">
+                    <VoiceSettings 
+                      onVoiceChange={setVoice} 
+                      currentVoice={voice} 
+                      disabled={isListening} 
+                    />
+                </div>
 
-                <ControlButton
-                    onClick={handleMicClick}
-                    className={`${isListening && !isMuted ? 'bg-red-600 hover:bg-red-500 animate-pulse' : 'bg-blue-600 hover:bg-blue-500'} w-20 h-20 text-4xl`}
-                    aria-label={isListening ? (isMuted ? UI_TEXTS[language].unmute : UI_TEXTS[language].mute) : UI_TEXTS[language].startListening}
-                >
-                    {isListening ? (isMuted ? <MicrophoneOffIcon /> : <StopIcon />) : <MicrophoneIcon />}
-                </ControlButton>
+        {/* Center: Main Controls (status displayed next to mic) */}
+        <div className="flex-1 flex justify-center items-center space-x-4">
+                    <ControlButton
+                        onClick={handleClearClick}
+                        disabled={messages.length === 0 && !isListening}
+                        className="bg-gray-700 hover:bg-gray-600 disabled:bg-gray-800 disabled:text-gray-500"
+                        aria-label={UI_TEXTS[language].clearChat}
+                    >
+                        <TrashIcon />
+                    </ControlButton>
 
-                <div className="w-32 h-16 flex items-center justify-center">
-                    <p className={`text-center text-xs min-h-[2.5rem] ${connectionState === 'error' ? 'text-red-400' : 'text-gray-400'}`}>{getStatusText()}</p>
+                    <ControlButton
+                        onClick={handleMicClick}
+                        className={`${isListening && !isMuted ? 'bg-red-600 hover:bg-red-500 animate-pulse' : 'bg-blue-600 hover:bg-blue-500'} w-20 h-20 text-4xl`}
+                        aria-label={isListening ? (isMuted ? UI_TEXTS[language].unmute : UI_TEXTS[language].mute) : UI_TEXTS[language].startListening}
+                    >
+                        {isListening ? (isMuted ? <MicrophoneOffIcon /> : <StopIcon />) : <MicrophoneIcon />}
+                    </ControlButton>
+
+          {/* Status text placed very close to the mic */}
+          <div className="ml-2 flex items-center">
+            <p className={`text-sm leading-none ${connectionState === 'error' ? 'text-red-400' : 'text-gray-300'}`}>{getStatusText()}</p>
+          </div>
                 </div>
             </div>
         </footer>

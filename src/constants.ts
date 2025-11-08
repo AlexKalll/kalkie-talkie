@@ -11,7 +11,10 @@ type UITexts = {
     statusIdle: string;
     statusConnecting: string;
     statusListening: string;
+    statusMuted: string;
     statusError: string;
+    mute: string;
+    unmute: string;
   };
 };
 
@@ -26,7 +29,10 @@ export const UI_TEXTS: UITexts = {
     statusIdle: 'Tap to talk',
     statusConnecting: 'Connecting...',
     statusListening: 'Listening...',
+    statusMuted: 'Muted',
     statusError: 'Connection error',
+    mute: 'Mute',
+    unmute: 'Unmute',
   },
   [Language.AMHARIC]: {
     header: 'ከ Gemini Live ጋር ይነጋገሩ',
@@ -38,6 +44,9 @@ export const UI_TEXTS: UITexts = {
     statusIdle: 'ለመነጋገር ይንኩ',
     statusConnecting: 'በመገናኘት ላይ...',
     statusListening: 'በማዳመጥ ላይ...',
+    statusMuted: 'ድምጸ-ከል ተደርጓል',
     statusError: 'የግንኙነት ስህተት',
+    mute: 'ድምጸ-ከል አድርግ',
+    unmute: 'ድምጸ-ከል አንሳ',
   },
 };
