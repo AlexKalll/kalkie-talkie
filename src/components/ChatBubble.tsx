@@ -15,13 +15,15 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({ sender, text }) => {
       }`}
     >
       <div
-        className={`px-4 py-3 rounded-2xl max-w-sm md:max-w-md shadow-md ${
+        className={`px-4 py-3 rounded-2xl shadow-md ${
           isUser
             ? 'bg-blue-600 text-white rounded-br-none'
             : 'bg-gray-700 text-white rounded-bl-none'
         }`}
+        // Allow assistant messages to stretch wider horizontally up to 80ch, but never overflow the container
+        style={isUser ? { whiteSpace: 'pre-wrap', maxWidth: 'min(60ch, 100%)' } : { whiteSpace: 'pre-wrap', maxWidth: 'min(80ch, 100%)' }}
       >
-        <p style={{ whiteSpace: 'pre-wrap' }}>{text}</p>
+        <p>{text}</p>
       </div>
     </div>
   );
