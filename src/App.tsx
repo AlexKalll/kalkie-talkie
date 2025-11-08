@@ -5,7 +5,7 @@ import { useGeminiLive } from './hooks/useGeminiLive';
 import ChatBubble from './components/ChatBubble';
 import LanguageSwitcher from './components/LanguageSwitcher';
 import ControlButton from './components/ControlButton';
-import { MicrophoneIcon, StopIcon, TrashIcon } from './components/icons/Icons';
+import { MicrophoneIcon, StopIcon, TrashIcon, MicrophoneOffIcon } from './components/icons/Icons';
 
 const App: React.FC = () => {
   const [language, setLanguage] = useState<Language>(Language.ENGLISH);
@@ -13,10 +13,12 @@ const App: React.FC = () => {
     messages,
     connectionState,
     isListening,
+    isMuted,
     startSession,
     closeSession,
     clearMessages,
     errorMessage,
+    toggleMute,
   } = useGeminiLive(language);
 
   const chatEndRef = useRef<HTMLDivElement>(null);
@@ -26,10 +28,10 @@ const App: React.FC = () => {
   }, [messages]);
 
   const handleMicClick = () => {
-    if (isListening) {
-      closeSession();
-    } else {
+    if (!isListening) {
       startSession();
+    } else {
+      toggleMute();
     }
   };
 
@@ -43,7 +45,8 @@ const App: React.FC = () => {
   const getStatusText = () => {
     if (connectionState === 'connecting') return UI_TEXTS[language].statusConnecting;
     if (connectionState === 'error') return errorMessage ?? UI_TEXTS[language].statusError;
-    if (isListening) return UI_TEXTS[language].statusListening;
+    if (isListening && !isMuted) return UI_TEXTS[language].statusListening;
+    if (isListening && isMuted) return UI_TEXTS[language].statusMuted;
     return UI_TEXTS[language].statusIdle;
   };
   
@@ -84,10 +87,10 @@ const App: React.FC = () => {
 
                 <ControlButton
                     onClick={handleMicClick}
-                    className={`${isListening ? 'bg-red-600 hover:bg-red-500 animate-pulse' : 'bg-blue-600 hover:bg-blue-500'} w-20 h-20 text-4xl`}
-                    aria-label={isListening ? UI_TEXTS[language].stopListening : UI_TEXTS[language].startListening}
+                    className={`${isListening && !isMuted ? 'bg-red-600 hover:bg-red-500 animate-pulse' : 'bg-blue-600 hover:bg-blue-500'} w-20 h-20 text-4xl`}
+                    aria-label={isListening ? (isMuted ? UI_TEXTS[language].unmute : UI_TEXTS[language].mute) : UI_TEXTS[language].startListening}
                 >
-                    {isListening ? <StopIcon /> : <MicrophoneIcon />}
+                    {isListening ? (isMuted ? <MicrophoneOffIcon /> : <StopIcon />) : <MicrophoneIcon />}
                 </ControlButton>
 
         <div className="w-32 h-16 flex items-center justify-center">

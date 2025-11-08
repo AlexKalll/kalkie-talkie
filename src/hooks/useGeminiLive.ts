@@ -15,6 +15,7 @@ export const useGeminiLive = (language: Language) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [connectionState, setConnectionState] = useState<ConnectionState>('idle');
   const [isListening, setIsListening] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const sessionPromiseRef = useRef<Promise<LiveSession> | null>(null);
@@ -85,6 +86,7 @@ export const useGeminiLive = (language: Language) => {
 
       setIsListening(false);
       setConnectionState('idle');
+      setIsMuted(false);
     } finally {
       isClosingRef.current = false;
     }
@@ -189,7 +191,7 @@ export const useGeminiLive = (language: Language) => {
             // Forward chunks to Gemini API as PCM16 base64
             workletNode.port.onmessage = (ev: MessageEvent) => {
               const float32 = ev.data as Float32Array;
-              if (!float32 || float32.length === 0) return;
+              if (!float32 || float32.length === 0 || isMuted) return;
               // Convert Float32 [-1,1] to Int16 PCM
               const int16 = new Int16Array(float32.length);
               for (let i = 0; i < float32.length; i++) {
@@ -234,7 +236,11 @@ export const useGeminiLive = (language: Language) => {
       setConnectionState('error');
       setIsListening(false);
     }
-  }, [isListening, closeSession, getSystemInstruction]);
+  }, [isListening, closeSession, getSystemInstruction, isMuted]);
+  
+  const toggleMute = useCallback(() => {
+    setIsMuted(prev => !prev);
+  }, []);
   
   const clearMessages = () => {
       setMessages([]);
@@ -249,5 +255,5 @@ export const useGeminiLive = (language: Language) => {
     };
   }, [closeSession]);
 
-  return { messages, connectionState, isListening, startSession, closeSession, clearMessages, errorMessage };
+  return { messages, connectionState, isListening, isMuted, startSession, closeSession, clearMessages, errorMessage, toggleMute };
 };

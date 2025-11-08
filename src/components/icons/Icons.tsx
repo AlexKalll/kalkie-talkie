@@ -1,7 +1,13 @@
-
 export const MicrophoneIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" viewBox="0 0 20 20" fill="currentColor">
     <path fillRule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm5 10.15V16h-4v-1.85A5.002 5.002 0 015 9V4a5 5 0 0110 0v5a5.002 5.002 0 01-5 5.15z" clipRule="evenodd" />
+  </svg>
+);
+
+export const MicrophoneOffIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" viewBox="0 0 20 20" fill="currentColor">
+    <path fillRule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm5 10.15V16h-4v-1.85A5.002 5.002 0 015 9V4a5 5 0 0110 0v5a5.002 5.002 0 01-5 5.15z" clipRule="evenodd" />
+    <path stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" d="M3.5 3.5l13 13" />
   </svg>
 );
 
