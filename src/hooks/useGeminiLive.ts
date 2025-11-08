@@ -11,7 +11,9 @@ type InlineDataBlob = { data: string; mimeType: string };
 
 type ConnectionState = 'idle' | 'connecting' | 'connected' | 'error';
 
-export const useGeminiLive = (language: Language) => {
+type Voice = 'Orus' | 'Zephyr';
+
+export const useGeminiLive = (language: Language, voice: Voice) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [connectionState, setConnectionState] = useState<ConnectionState>('idle');
   const [isListening, setIsListening] = useState(false);
@@ -223,7 +225,7 @@ export const useGeminiLive = (language: Language) => {
         },
         config: {
           responseModalities: [Modality.AUDIO],
-          speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Zephyr' } } },
+          speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: voice } } },
           systemInstruction: getSystemInstruction(),
           inputAudioTranscription: {},
           outputAudioTranscription: {},
@@ -236,7 +238,7 @@ export const useGeminiLive = (language: Language) => {
       setConnectionState('error');
       setIsListening(false);
     }
-  }, [isListening, closeSession, getSystemInstruction, isMuted]);
+  }, [isListening, closeSession, getSystemInstruction, isMuted, voice]);
   
   const toggleMute = useCallback(() => {
     setIsMuted(prev => !prev);

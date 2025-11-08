@@ -5,10 +5,17 @@ import { useGeminiLive } from './hooks/useGeminiLive';
 import ChatBubble from './components/ChatBubble';
 import LanguageSwitcher from './components/LanguageSwitcher';
 import ControlButton from './components/ControlButton';
+import VoiceSettings from './components/VoiceSettings';
 import { MicrophoneIcon, StopIcon, TrashIcon, MicrophoneOffIcon } from './components/icons/Icons';
+
+type Voice = 'Orus' | 'Zephyr';
 
 const App: React.FC = () => {
   const [language, setLanguage] = useState<Language>(Language.ENGLISH);
+  const [voice, setVoice] = useState<Voice>(() => {
+    return (localStorage.getItem('gemini-voice') as Voice) || 'Zephyr';
+  });
+
   const {
     messages,
     connectionState,
@@ -19,10 +26,14 @@ const App: React.FC = () => {
     clearMessages,
     errorMessage,
     toggleMute,
-  } = useGeminiLive(language);
+  } = useGeminiLive(language, voice);
 
   const chatEndRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    localStorage.setItem('gemini-voice', voice);
+  }, [voice]);
+  
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
@@ -76,6 +87,11 @@ const App: React.FC = () => {
         
         <footer className="p-4 border-t border-white/10 flex-shrink-0">
             <div className="flex items-center justify-center space-x-4">
+                <VoiceSettings 
+                  onVoiceChange={setVoice} 
+                  currentVoice={voice} 
+                  disabled={isListening} 
+                />
                  <ControlButton
                     onClick={handleClearClick}
                     disabled={messages.length === 0 && !isListening}
@@ -93,8 +109,8 @@ const App: React.FC = () => {
                     {isListening ? (isMuted ? <MicrophoneOffIcon /> : <StopIcon />) : <MicrophoneIcon />}
                 </ControlButton>
 
-        <div className="w-32 h-16 flex items-center justify-center">
-          <p className={`text-center text-xs min-h-[2.5rem] ${connectionState === 'error' ? 'text-red-400' : 'text-gray-400'}`}>{getStatusText()}</p>
+                <div className="w-32 h-16 flex items-center justify-center">
+                    <p className={`text-center text-xs min-h-[2.5rem] ${connectionState === 'error' ? 'text-red-400' : 'text-gray-400'}`}>{getStatusText()}</p>
                 </div>
             </div>
         </footer>
