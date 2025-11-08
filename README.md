@@ -1,73 +1,81 @@
-# React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Kalkie-talkie
 
-Currently, two official plugins are available:
+Kalkie-talkie is a responsive, real-time bilingual voice chat application built with React and TypeScript. It demonstrates low-latency browser audio capture, live transcription, and streamed assistant audio playback with a clean, mobile-first UI.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Live demo: https://kalkie-talkie.vercel.app
 
-## React Compiler
+## Highlights
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Real-time microphone streaming using the Web Audio API with an AudioWorklet for low-latency capture
+- Live transcription for both user input and assistant responses
+- Smooth, gap-free assistant audio playback via scheduled AudioBufferSourceNodes
+- Microphone mute/unmute (pauses sending audio without closing the session)
+- Voice selection (male/female presets) persisted to localStorage
+- Responsive, accessible UI built with Tailwind CSS
 
-## Expanding the ESLint configuration
+## Tech stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- React + TypeScript
+- Vite (dev server + build)
+- Tailwind CSS
+- Web Audio API (AudioWorklet)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Getting started
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+Prerequisites:
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- Node.js (16+ recommended)
+- npm (or yarn)
+
+1. Clone the repository
+
+```bash
+git clone https://github.com/AlexKalll/kalkie-talkie.git
+cd bilingual-talk
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+2. Install dependencies
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+# or
+# yarn
 ```
+
+3. Run the dev server
+
+```bash
+npm run dev
+```
+
+Open the address printed by Vite (usually http://localhost:5173). The app will request microphone permission when you start a session.
+
+## Environment & credentials
+
+The app connects to an AI streaming backend for live conversation. Use environment variables as required by your chosen provider.
+Adjust variable names and values to match your backend's requirements.
+
+## Scripts
+
+- `npm run dev` — start Vite dev server
+- `npm run build` — run TypeScript build and produce optimized assets with Vite
+- `npm run preview` — serve the production build locally
+
+## Production & deployment
+
+This project is compatible with static hosting platforms such as Vercel, Netlify, and Cloudflare Pages. The demo is deployed at the URL above.
+
+To deploy to Vercel, connect your repository and set any provider environment variables in the Vercel dashboard.
+
+## Troubleshooting
+
+- Microphone permission denied: enable mic permission for the site in your browser and ensure no other app is blocking the device.
+- No assistant audio: verify your audio output device and check that playback is not blocked by autoplay policies (user interaction required).
+- Backend connection errors: confirm environment variables and backend availability — the app surfaces descriptive error messages in the UI status area.
+
+## Contributing
+
+Contributions are welcome. Consider improving the audio resampling, adding tests for the worklet, or making the backend provider adapter pluggable.
+
+Please open issues or PRs with clear descriptions and test cases when appropriate.
