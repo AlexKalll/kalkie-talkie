@@ -213,8 +213,16 @@ export const useGeminiLive = (language: Language, voice: Voice) => {
             if (!inCtx) throw new Error('Failed to initialize input audio context.');
 
             // Load and create worklet
+            // Try loading the module via the bundler (new URL) first; if that fails in production
+            // (CSP, missing TS -> JS mapping), fall back to the static asset in /public.
             try {
-              await inCtx.audioWorklet.addModule(new URL('../audio/processor.ts', import.meta.url));
+              try {
+                await inCtx.audioWorklet.addModule(new URL('../audio/processor.ts', import.meta.url));
+              } catch (e) {
+                // Fallback to public asset (prebuilt JS)
+                console.warn('Bundled worklet load failed, falling back to public/audio-processor.js', e);
+                await inCtx.audioWorklet.addModule('/audio-processor.js');
+              }
             } catch (err: any) {
               throw new Error(`Failed to load audio worklet: ${err?.message ?? String(err)}`);
             }
