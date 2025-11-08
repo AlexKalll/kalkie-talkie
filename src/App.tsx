@@ -62,8 +62,8 @@ const App: React.FC = () => {
   };
   
   return (
-    <div className="bg-gradient-to-br from-gray-900 via-purple-900 to-blue-900 min-h-screen text-white flex flex-col items-center justify-center p-4 animated-gradient">
-      <div className="w-full max-w-2xl h-full max-h-[90vh] bg-black bg-opacity-40 backdrop-blur-xl rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-white/10">
+  <div className="bg-gradient-to-b from-black via-black-900 to-gray-900 min-h-screen text-white flex flex-col items-center justify-center p-4">
+  <div className="w-full max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl h-full max-h-[90vh] bg-black bg-opacity-40 backdrop-blur-xl rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-white/10">
         <header className="p-4 border-b border-white/10 flex justify-between items-center flex-shrink-0">
           <h1 className="text-xl font-bold">{UI_TEXTS[language].header}</h1>
           <LanguageSwitcher language={language} setLanguage={setLanguage} disabled={isListening} />
@@ -98,22 +98,22 @@ const App: React.FC = () => {
 
         {/* Center: Main Controls (status displayed next to mic) */}
         <div className="flex-1 flex justify-center items-center space-x-4">
-                    <ControlButton
-                        onClick={handleClearClick}
-                        disabled={messages.length === 0 && !isListening}
-                        className="bg-gray-700 hover:bg-gray-600 disabled:bg-gray-800 disabled:text-gray-500"
-                        aria-label={UI_TEXTS[language].clearChat}
-                    >
-                        <TrashIcon />
-                    </ControlButton>
+          <ControlButton
+            onClick={handleClearClick}
+            disabled={messages.length === 0 && !isListening}
+            className="bg-gray-700 hover:bg-gray-600 disabled:bg-gray-800 disabled:text-gray-500 w-12 h-12 text-lg"
+            aria-label={UI_TEXTS[language].clearChat}
+          >
+            <TrashIcon />
+          </ControlButton>
 
-                    <ControlButton
-                        onClick={handleMicClick}
-                        className={`${isListening && !isMuted ? 'bg-red-600 hover:bg-red-500 animate-pulse' : 'bg-blue-600 hover:bg-blue-500'} w-20 h-20 text-4xl`}
-                        aria-label={isListening ? (isMuted ? UI_TEXTS[language].unmute : UI_TEXTS[language].mute) : UI_TEXTS[language].startListening}
-                    >
-                        {isListening ? (isMuted ? <MicrophoneOffIcon /> : <StopIcon />) : <MicrophoneIcon />}
-                    </ControlButton>
+          <ControlButton
+            onClick={handleMicClick}
+            className={`${isListening && !isMuted ? 'bg-red-600 hover:bg-red-500 animate-pulse' : 'bg-blue-600 hover:bg-blue-500'} w-12 h-12 text-3xl`}
+            aria-label={isListening ? (isMuted ? UI_TEXTS[language].unmute : UI_TEXTS[language].mute) : UI_TEXTS[language].startListening}
+          >
+            {isListening ? (isMuted ? <MicrophoneOffIcon /> : <StopIcon />) : <MicrophoneIcon />}
+          </ControlButton>
 
           {/* Status text placed very close to the mic */}
           <div className="ml-2 flex items-center">
