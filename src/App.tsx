@@ -119,7 +119,10 @@ const App: React.FC = () => {
           <div className="ml-2 flex items-center">
             <p className={`text-sm leading-none ${connectionState === 'error' ? 'text-red-400' : 'text-gray-300'}`}>{getStatusText()}</p>
           </div>
-                </div>
+        </div>
+
+        {/* Right spacer to perfectly center the controls */}
+        <div className="flex-1" />
             </div>
         </footer>
       </div>

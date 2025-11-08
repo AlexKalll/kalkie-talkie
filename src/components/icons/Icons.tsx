@@ -1,13 +1,20 @@
 export const MicrophoneIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" viewBox="0 0 20 20" fill="currentColor">
-    <path fillRule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm5 10.15V16h-4v-1.85A5.002 5.002 0 015 9V4a5 5 0 0110 0v5a5.002 5.002 0 01-5 5.15z" clipRule="evenodd" />
+  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 block" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M12 1.5a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 004.5 0V3.75A2.25 2.25 0 0012 1.5z" />
+    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5v.75a6.75 6.75 0 01-13.5 0v-.75" />
+    <path strokeLinecap="round" strokeLinejoin="round" d="M12 19.5v2.25" />
   </svg>
 );
 
 export const MicrophoneOffIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" viewBox="0 0 20 20" fill="currentColor">
-    <path fillRule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm5 10.15V16h-4v-1.85A5.002 5.002 0 015 9V4a5 5 0 0110 0v5a5.002 5.002 0 01-5 5.15z" clipRule="evenodd" />
-    <path stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" d="M3.5 3.5l13 13" />
+  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 block" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+    {/* microphone body */}
+    <path strokeLinecap="round" strokeLinejoin="round" d="M12 1.5a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 004.5 0V3.75A2.25 2.25 0 0012 1.5z" />
+    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5v.75a6.75 6.75 0 01-3.75 6.187" />
+    <path strokeLinecap="round" strokeLinejoin="round" d="M9 10.5v.75a3.75 3.75 0 003.75 3.75" />
+    <path strokeLinecap="round" strokeLinejoin="round" d="M12 19.5v2.25" />
+    {/* slash */}
+    <path strokeLinecap="round" strokeLinejoin="round" d="M3 3l18 18" />
   </svg>
 );
 
