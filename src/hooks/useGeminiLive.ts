@@ -26,6 +26,7 @@ export const useGeminiLive = (language: Language, voice: Voice) => {
   const outputAudioContextRef = useRef<AudioContext | null>(null);
   const workletNodeRef = useRef<AudioWorkletNode | null>(null);
   const mediaSourceNodeRef = useRef<MediaStreamAudioSourceNode | null>(null);
+  const isMutedRef = useRef<boolean>(false);
   const nextStartTimeRef = useRef<number>(0);
   const audioSourcesRef = useRef<Set<AudioBufferSourceNode>>(new Set());
   const isClosingRef = useRef<boolean>(false);
@@ -89,6 +90,7 @@ export const useGeminiLive = (language: Language, voice: Voice) => {
       setIsListening(false);
       setConnectionState('idle');
       setIsMuted(false);
+      isMutedRef.current = false;
     } finally {
       isClosingRef.current = false;
     }
@@ -190,10 +192,12 @@ export const useGeminiLive = (language: Language, voice: Voice) => {
             });
             workletNodeRef.current = workletNode;
 
-            // Forward chunks to Gemini API as PCM16 base64
+            // Forward chunks to server as PCM16 base64 unless muted.
             workletNode.port.onmessage = (ev: MessageEvent) => {
               const float32 = ev.data as Float32Array;
-              if (!float32 || float32.length === 0 || isMuted) return;
+              if (!float32 || float32.length === 0) return;
+              // Check the current muted state via ref so runtime toggles take effect
+              if (isMutedRef.current) return;
               // Convert Float32 [-1,1] to Int16 PCM
               const int16 = new Int16Array(float32.length);
               for (let i = 0; i < float32.length; i++) {
@@ -241,7 +245,11 @@ export const useGeminiLive = (language: Language, voice: Voice) => {
   }, [isListening, closeSession, getSystemInstruction, isMuted, voice]);
   
   const toggleMute = useCallback(() => {
-    setIsMuted(prev => !prev);
+    setIsMuted(prev => {
+      const next = !prev;
+      isMutedRef.current = next;
+      return next;
+    });
   }, []);
   
   const clearMessages = () => {
