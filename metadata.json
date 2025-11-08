@@ -1,5 +1,7 @@
 {
-  "name": "bilingual-talk",
-  "version": "1.0.0",
-  "description": "Bilingual Talk App"
+  "name": "Gemini Live Talk",
+  "description": "A visually stunning website that allows users to talk directly with Gemini Live in real time through both text and voice, supporting English and Amharic languages.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
 }
