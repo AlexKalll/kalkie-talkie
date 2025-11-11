@@ -97,7 +97,7 @@ const App: React.FC = () => {
                 </div>
 
         {/* Center: Main Controls (status displayed next to mic) */}
-        <div className="flex-1 flex justify-center items-center space-x-4">
+  <div className="flex-1 flex justify-center items-center space-x-4 ml-14 md:ml-9">
           <ControlButton
             onClick={handleClearClick}
             disabled={messages.length === 0 && !isListening}
