@@ -126,6 +126,10 @@ const App: React.FC = () => {
             </div>
         </footer>
       </div>
+    {/* Left-bottom author note */}
+    <div className="fixed bottom-2 text-sm text-gray-400">
+      By: Kaletsidik A.  |  All rights reserved!
+    </div>
     </div>
   );
 };
