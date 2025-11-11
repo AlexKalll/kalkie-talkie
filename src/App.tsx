@@ -101,7 +101,7 @@ const App: React.FC = () => {
           <ControlButton
             onClick={handleClearClick}
             disabled={messages.length === 0 && !isListening}
-            className="bg-gray-700 hover:bg-gray-600 disabled:bg-gray-800 disabled:text-gray-500 w-12 h-12 text-lg"
+            className="bg-gray-700 hover:bg-gray-600 disabled:bg-gray-800 disabled:text-gray-500 w-12 h-12 text-2xl"
             aria-label={UI_TEXTS[language].clearChat}
           >
             <TrashIcon />
